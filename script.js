@@ -1,32 +1,38 @@
-window.onload = function () {
-    setTimeout(() => {
-        document.getElementById("loader").style.display = "none";
-    }, 1000);
-};
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+const list = document.getElementById("taskList");
+const emptyMsg = document.getElementById("emptyMsg");
+
+document.getElementById("toggleMode").onclick = () => {
+    document.body.classList.toggle("light");
+};
+
 function renderTasks() {
-    const list = document.getElementById("taskList");
     list.innerHTML = "";
+
+    if (tasks.length === 0) {
+        emptyMsg.style.display = "block";
+    } else {
+        emptyMsg.style.display = "none";
+    }
 
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.innerText = task.text;
+        li.classList.add(task.priority);
 
-        if (task.completed) {
-            li.classList.add("completed");
-        }
+        if (task.completed) li.classList.add("completed");
 
         li.onclick = () => toggleTask(index);
 
-        const delBtn = document.createElement("button");
-        delBtn.innerText = "X";
-        delBtn.onclick = (e) => {
+        const del = document.createElement("button");
+        del.innerText = "X";
+        del.onclick = (e) => {
             e.stopPropagation();
             deleteTask(index);
         };
 
-        li.appendChild(delBtn);
+        li.appendChild(del);
         list.appendChild(li);
     });
 
@@ -35,9 +41,16 @@ function renderTasks() {
 
 function addTask() {
     const input = document.getElementById("taskInput");
+    const priority = document.getElementById("priority").value;
+
     if (input.value.trim() === "") return;
 
-    tasks.push({ text: input.value, completed: false });
+    tasks.push({
+        text: input.value,
+        completed: false,
+        priority: priority
+    });
+
     input.value = "";
     renderTasks();
 }
