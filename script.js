@@ -1,3 +1,8 @@
+window.onload = function () {
+    setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+    }, 1000);
+};
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 function renderTasks() {
